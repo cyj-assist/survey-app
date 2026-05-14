@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Pretendard', 'Apple SD Gothic Neo', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  --bg: #f1f5f9;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --primary: #4f46e5;
+  --primary-light: #eef2ff;
+  --border: #e2e8f0;
+  --card-bg: #ffffff;
+}
+
+body {
+  @apply bg-[#f1f5f9] text-[#1e293b] font-sans antialiased;
+}
+
+/* Bento Grid Components */
+.bento-card {
+  @apply bg-white border border-[#e2e8f0] rounded-2xl p-6 shadow-sm flex flex-col overflow-hidden transition-all duration-200;
+}
+
+.bento-card:hover {
+  @apply shadow-md border-[#cbd5e1];
+}
+
+.btn-primary {
+  @apply bg-[#4f46e5] text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-[#4338ca] transition-all flex items-center gap-2 shadow-sm active:scale-95;
+}
+
+.btn-secondary {
+  @apply bg-white text-[#64748b] px-5 py-2.5 border border-[#e2e8f0] rounded-xl font-semibold hover:bg-[#f8fafc] hover:text-[#1e293b] transition-all flex items-center gap-2 active:scale-95;
+}
+
+.input-bento {
+  @apply w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#4f46e5]/20 focus:border-[#4f46e5] transition-all text-sm;
+}
+
+.nav-item-bento {
+  @apply flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-[#64748b] hover:bg-[#f8fafc] hover:text-[#1e293b] transition-all cursor-pointer;
+}
+
+.nav-item-active {
+  @apply bg-[#eef2ff] text-[#4f46e5] hover:bg-[#eef2ff] hover:text-[#4f46e5];
+}
+
+.status-badge {
+  @apply px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-[#cbd5e1] rounded-full hover:bg-[#94a3b8];
+}

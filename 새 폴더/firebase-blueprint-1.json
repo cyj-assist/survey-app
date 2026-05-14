@@ -1,0 +1,91 @@
+{
+  "entities": {
+    "SurveyConfig": {
+      "title": "Survey Configuration",
+      "description": "The structure of the survey including sections and questions",
+      "type": "object",
+      "properties": {
+        "sections": {
+          "type": "array",
+          "description": "Array of section objects containing questions"
+        },
+        "surveyTitle": {
+          "type": "string",
+          "description": "The main title of the survey"
+        },
+        "surveySubtitle": {
+          "type": "string",
+          "description": "The subtitle of the survey landing page"
+        },
+        "surveyDescription": {
+          "type": "string",
+          "description": "The main description on the survey landing page"
+        },
+        "surveyInstructions": {
+          "type": "string",
+          "description": "Instruction bullet points (newline separated)"
+        },
+        "completionTitle": {
+          "type": "string",
+          "description": "Title displayed on the thank you page"
+        },
+        "completionDescription": {
+          "type": "string",
+          "description": "Description displayed on the thank you page"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["sections", "updatedAt"]
+    },
+    "SurveyResponse": {
+      "title": "Survey Response",
+      "description": "A single survey response submitted by a user",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The UID of the user who submitted the survey"
+        },
+        "userName": {
+          "type": "string",
+          "description": "Optional user name"
+        },
+        "submittedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of submission"
+        },
+        "q1": { "type": "integer", "description": "Clear learning objectives" },
+        "q2": { "type": "integer", "description": "Content alignment with objectives" },
+        "q3": { "type": "integer", "description": "Logical/systematic progression" },
+        "q4": { "type": "integer", "description": "Appropriate teaching method" },
+        "q5": { "type": "integer", "description": "Ease of understanding explanation" },
+        "q6": { "type": "integer", "description": "Appropriate time allocation" },
+        "q7": { "type": "integer", "description": "Preparation of materials" },
+        "q8": { "type": "integer", "description": "Use of handouts/cases" },
+        "q9": { "type": "integer", "description": "Learning will/participation" },
+        "q10": { "type": "integer", "description": "Overall understanding" },
+        "q11": { "type": "integer", "description": "Overall satisfaction" },
+        "q12": { "type": "boolean", "description": "Open next year?" },
+        "q13": { "type": "boolean", "description": "Same professor next year?" },
+        "q14": { "type": "string", "description": "Most useful aspect" },
+        "q15": { "type": "string", "description": "Work application" },
+        "q16": { "type": "string", "description": "Improvements/suggestions" }
+      },
+      "required": ["userId", "submittedAt", "q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10", "q11", "q12", "q13"]
+    }
+  },
+  "firestore": {
+    "configs": {
+      "schema": "SurveyConfig",
+      "description": "Global survey configuration"
+    },
+    "responses": {
+      "schema": "SurveyResponse",
+      "description": "Collection of lecture evaluation responses"
+    }
+  }
+}
