@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Survey": {
+      "title": "Survey",
+      "description": "Educational course satisfaction survey metadata and structure",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "openMessage": { "type": "string" },
+        "closingMessage": { "type": "string" },
+        "status": { "type": "string", "enum": ["draft", "active", "closed"] },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" },
+        "createdBy": { "type": "string" },
+        "settings": {
+          "type": "object",
+          "properties": {
+             "antiDuplication": { "type": "boolean" },
+             "pdfTemplate": {
+                "type": "object",
+                "properties": {
+                   "logoUrl": { "type": "string" },
+                   "primaryColor": { "type": "string" },
+                   "layout": { "type": "string" },
+                   "showGraphs": { "type": "boolean" },
+                   "showTable": { "type": "boolean" }
+                }
+             }
+          }
+        },
+        "questions": {
+          "type": "array",
+          "items": { "type": "object" }
+        }
+      },
+      "required": ["id", "title", "status", "createdAt", "createdBy"]
+    },
+    "SurveyResponse": {
+      "title": "SurveyResponse",
+      "description": "Answers submitted by learners",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "surveyId": { "type": "string" },
+        "answers": { "type": "array" },
+        "submittedAt": { "type": "number" },
+        "respondentId": { "type": "string" },
+        "metadata": { "type": "object" }
+      },
+      "required": ["id", "surveyId", "answers", "submittedAt", "respondentId"]
+    }
+  },
+  "firestore": {
+    "/surveys/{surveyId}": {
+      "schema": "Survey",
+      "description": "Collection of all surveys"
+    },
+    "/surveys/{surveyId}/responses/{responseId}": {
+      "schema": "SurveyResponse",
+      "description": "Sub-collection of responses for a specific survey"
+    }
+  }
+}

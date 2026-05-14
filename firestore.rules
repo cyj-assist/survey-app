@@ -1,0 +1,90 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Survey Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'whdbswjd9705@gmail.com' ||
+        request.auth.token.email == 'yjcho2@assist.ac.kr'
+      );
+    }
+
+    function isOwner(surveyData) {
+      return isSignedIn() && (surveyData.createdBy == request.auth.uid || isAdmin());
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidSurvey(data) {
+      return data.title is string && data.title.size() > 0 && data.title.size() <= 300
+        && data.status in ['draft', 'active', 'closed']
+        && (data.groupTag == null || (data.groupTag is string && data.groupTag.size() <= 100))
+        && data.createdAt is number
+        && (data.updatedAt == null || data.updatedAt is number)
+        && data.createdBy is string;
+    }
+
+    match /surveys/{surveyId} {
+      // Basic ID validation
+      allow get: if isValidId(surveyId);
+      
+      // Only owner or admin can list surveys
+      allow list: if isSignedIn() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      
+      // Create: user must be signed in, payload must be valid, and they must set themselves as creator
+      allow create: if isSignedIn() 
+        && isValidId(surveyId) 
+        && isValidSurvey(incoming()) 
+        && incoming().createdBy == request.auth.uid
+        && incoming().get('respondentCount', 0) == 0;
+
+      // Update: either public incrementing count OR owner modifying details
+      allow update: if (
+        // Public increment
+        incoming().diff(existing()).affectedKeys().hasOnly(['respondentCount'])
+        && incoming().respondentCount == (existing().get('respondentCount', 0) + 1)
+      ) || (
+        // Owner full update
+        isOwner(existing())
+        && isValidSurvey(incoming())
+        && incoming().createdBy == existing().createdBy // Creator is immutable
+        && incoming().createdAt == existing().createdAt // CreatedAt is immutable
+      );
+      
+      allow delete: if isOwner(existing());
+
+      // Responses subcollection
+      match /responses/{responseId} {
+        // Public can submit response
+        allow create: if true; // In production, consider rate limiting or basic validation
+        
+        // Only owner of the survey or admin can read responses
+        allow list, get: if isSignedIn() && (get(/databases/$(database)/documents/surveys/$(surveyId)).data.createdBy == request.auth.uid || isAdmin());
+        
+        // Responses are immutable for respondents
+        allow update, delete: if false;
+      }
+    }
+  }
+}
